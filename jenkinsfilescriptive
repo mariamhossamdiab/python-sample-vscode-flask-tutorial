@@ -1,0 +1,21 @@
+node {
+    checkout scm
+    env.XYZ = 'ITI ITI ITI'
+    env.IMAGE_NAME = 'mariamhossam00/jenkins_scriptive'
+
+    try {
+        stage('Build Docker Image') {
+            sh "docker build -t ${env.IMAGE_NAME}:v${env.BUILD_NUMBER} ."
+        }
+
+        stage('Push Docker Image') {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub-cred', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                sh "echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_USERNAME} --password-stdin"
+                sh "docker push ${env.IMAGE_NAME}:v${env.BUILD_NUMBER}"
+            }
+        }
+    } catch (err) {
+        echo "Build failed: ${err}"
+        throw err
+    }
+}
