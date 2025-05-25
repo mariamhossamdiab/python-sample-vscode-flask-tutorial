@@ -8,7 +8,7 @@ pipeline{
     stages{
         stage("build Docker image"){
             steps{
-                sh "docker build -t itiv4/data-iti:v${BUILD_NUMBER} ."
+                sh "docker build -t mariam/itian:v${BUILD_NUMBER} ."
             }
         }
         stage("Push Docker image"){
